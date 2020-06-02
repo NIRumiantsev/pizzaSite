@@ -1,10 +1,10 @@
 <template>
     <div>
-        <h1 class="pizza__title">Pizza</h1>
+        <h1 class="title">Pizza</h1>
         <pizza />
-        <router-link to="/cart" class="pizza__cart">
-            <img class="pizza__icon" src="../assets/icons/cart.svg" alt="">
-            <div class="pizza__score">{{itemsTotal}}</div>
+        <router-link to="/cart" class="cart">
+            <img class="icon" src="../assets/icons/cart.svg" alt="">
+            <div class="score">{{itemsTotal}}</div>
         </router-link>
     </div>
 </template>
@@ -25,14 +25,14 @@
 
 <style scoped>
 
-    .pizza__title {
+    .title {
         font-family: Roboto, sans-serif;
         font-size: 40px;
         color: #2f2b28;
         text-align: center;
     }
 
-    .pizza__cart {
+    .cart {
         border-radius: 50%;
         background-color: #e7e6f0;
         width: 100px;
@@ -46,13 +46,13 @@
 
     }
 
-    .pizza__icon {
+    .icon {
         display: block;
         width: 50px;
         height: 50px;
     }
 
-    .pizza__score {
+    .score {
         position: absolute;
         bottom: -5px;
         right: -5px;

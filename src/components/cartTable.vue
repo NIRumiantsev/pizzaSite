@@ -1,15 +1,15 @@
 <template>
     <div class="cart" v-if="cartItems">
-        <img :src="require(`@/assets/pizza/${image}`)" class="cart__image"/>
-        <input type="text" class="cart__text" name="Наименование" :value="title" readonly>
-        <input type="text" class="cart__text" name="Размер" value="Ø 26cm" readonly v-if="small">
-        <input type="text" class="cart__text" name="Размер" value="Ø 36cm" readonly v-else>
-        <input type="text" class="cart__text" name="Колличество" :value="count" readonly>
-        <input type="text" class="cart__text" name="Сумма" :value="`${total} €`" readonly>
+        <img :src="require(`@/assets/${category}/${image}`)" class="cart__image"/>
+        <input type="text" class="cart__text" name="Name der Pizza" :value="title" readonly>
+        <input type="text" class="cart__text" name="Die Größe" :value="volumeSmall" readonly v-if="small">
+        <input type="text" class="cart__text" name="Die Größe" :value="volumeLarge" readonly v-else>
+        <input type="text" class="cart__text" name="Menge" :value="count" readonly>
+        <input type="text" class="cart__text" name="Positionskosten" :value="`${total} €`" readonly>
         <div class="cart__buttons">
-            <img :src="require(`@/assets/icons/trash.svg`)" class="cart__button" @click="delPizza(id)" alt=""/>
-            <img :src="require(`@/assets/icons/more.svg`)" class="cart__button" @click="addPizza" alt=""/>
-            <img :src="require(`@/assets/icons/minus.svg`)" class="cart__button" @click="decPizza(id)" alt=""/>
+            <img :src="require(`@/assets/icons/trash.svg`)" class="cart__button" @click="delItemFromCart" alt=""/>
+            <img :src="require(`@/assets/icons/more.svg`)" class="cart__button" @click="addItemToCart" alt=""/>
+            <img :src="require(`@/assets/icons/minus.svg`)" class="cart__button" @click="decItemInCart" alt=""/>
         </div>
     </div>
 </template>
@@ -21,28 +21,31 @@
         computed: {
             ...mapGetters(['cartItems'])
         },
-        props: ["id", "title", "count", "total", "image", "small"],
+        props: ["id", "title", "count", "total", "image", "small", "category","volumeSmall", "volumeLarge"],
         methods: {
-            addPizza() {
+            addItemToCart() {
                 const options = {
-                    pizzaId: this.id,
+                    category: this.category,
+                    itemId: this.id,
                     small: this.small,
                 };
-                this.$store.dispatch('addPizzaToCart', options);
+                this.$store.dispatch('addItemToCart', options);
             },
-            delPizza() {
+            delItemFromCart() {
                 const options = {
-                    pizzaId: this.id,
+                    category: this.category,
+                    itemId: this.id,
                     small: this.small,
                 };
-                this.$store.dispatch('delPizzaFromCart', options);
+                this.$store.dispatch('delItemFromCart', options);
             },
-            decPizza() {
+            decItemInCart() {
                 const options = {
-                    pizzaId: this.id,
+                    category: this.category,
+                    itemId: this.id,
                     small: this.small,
                 };
-                this.$store.dispatch('decPizzaInCart', options);
+                this.$store.dispatch('decItemInCart', options);
             }
         }
     }

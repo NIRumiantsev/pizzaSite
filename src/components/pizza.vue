@@ -8,6 +8,7 @@
                     :coverImage="position.image"
                     :priceSmall="position.prices.small"
                     :priceLarge="position.prices.large"
+                    :category="position.category"
             />
         </div>
     </div>

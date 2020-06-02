@@ -1,7 +1,7 @@
 <template>
     <div class="cart">
         <h1 class="cart__title">Warenkorb</h1>
-        <form action="https://formspree.io/xknqgqvz" method="POST" class="form" id="book-form" v-if="cartItems[0]">
+        <form action="https://formspree.io/xknqgqvz" method="POST" class="cart__form" v-if="cartItems[0]">
             <div v-for="position in cartItems" :key="cartItems.indexOf(position)">
                 <cartTable
                         :id="position.id"
@@ -10,18 +10,21 @@
                         :total="position.total"
                         :image="position.image"
                         :small="position.small"
+                        :category="position.category"
+                        :volumeSmall="position.volumeSmall"
+                        :volumeLarge="position.volumeLarge"
                 />
             </div>
             <div class="cart__total">
-                <input type="text" class="cart__total-price" name="ИТОГО" :value="`Gesamtpreis: ${orderTotal} €`" readonly>
+                <input type="text" class="cart__total-price" name="Gesamtpreis" :value="`Gesamtpreis: ${orderTotal} €`" readonly>
             </div>
             <h2 class="cart__subtitle">
                 Geben Sie persönliche Daten ein
             </h2>
-            <div class="cart__form">
-                <input type="text" class="cart__input" placeholder="Ihr Name" name="Имя" required>
-                <input type="tel" class="cart__input" placeholder="Deine Telefonnummer" name="Номер телефона" required>
-                <input type="tel" class="cart__input" placeholder="Deine Adresse" name="Адресс" required>
+            <div class="cart__info">
+                <input type="text" class="cart__input" placeholder="Ihr Name" name="Name" required>
+                <input type="tel" class="cart__input" placeholder="Deine Telefonnummer" name="Telefonnummer" required>
+                <input type="tel" class="cart__input" placeholder="Deine Adresse" name="Adresse" required>
             </div>
             <button type="submit" class="cart__order">Bestellen</button>
         </form>
@@ -54,6 +57,10 @@
     }
 
     .cart__form {
+        margin-bottom: 50px;
+    }
+
+    .cart__info {
         margin: 50px;
         display: flex;
         justify-content: space-between;

@@ -10,59 +10,68 @@ const state = {
 }
 
 const actions = {
-    addPizzaToCart(context, options) {
-        const pizzaId = options.pizzaId;
+
+    addItemToCart(context, options) {
+        const newItemId = options.itemId;
         const small = options.small;
-        const pizza = findPizzaInList(context, pizzaId);
-        context.commit('addPizza', {
-            pizza: pizza,
+        const category = options.category;
+        const item = findItemInList(context, newItemId, category);
+        context.commit('addItem', {
+            item: item,
             small: small,
         })
 
     },
-    delPizzaFromCart(context, options) {
-        const pizzaId = options.pizzaId;
+
+    delItemFromCart(context, options) {
+        const newItemId = options.itemId;
         const small = options.small;
-        const pizza = findPizzaInList(context, pizzaId);
-        context.commit('delPizza', {
-            pizza: pizza,
+        const category = options.category;
+        const item = findItemInList(context, newItemId, category);
+        context.commit('delItem', {
+            item: item,
             small: small,
         })
     },
-    decPizzaInCart(context, options) {
-        const pizzaId = options.pizzaId;
+
+    decItemInCart(context, options) {
+        const newItemId = options.itemId;
         const small = options.small;
-        const pizza = findPizzaInList(context, pizzaId);
-        context.commit('decBook', {
-            pizza: pizza,
+        const category = options.category;
+        const item = findItemInList(context, newItemId, category);
+        context.commit('decItem', {
+            item: item,
             small: small,
         })
     }
 }
 
 const mutations = {
-    addPizza(state, options) {
-        const pizza = options.pizza;
+
+    addItem(state, options) {
+        const item = options.item;
         const small = options.small;
-        updateOrder(state, pizza, 1, small);
+        updateOrder(state, item, 1, small);
     },
-    decBook(state, options) {
+
+    decItem(state, options) {
         const { cartItems } = state;
-        const pizza = options.pizza;
+        const item = options.item;
         const small = options.small;
-        const item = cartItems.find((item) => item.id === pizza.id && item.small === small);
-        if (item.count <= 1) {
-            const itemIndex = cartItems.findIndex((item) => item.id === pizza.id && item.small === small);
+        const desiredItem = cartItems.find((checkedItem) => checkedItem.category === item.category && checkedItem.id === item.id && checkedItem.small === small);
+        if (desiredItem.count <= 1) {
+            const itemIndex = cartItems.findIndex((checkedItem) => checkedItem.category === item.category && checkedItem.id === item.id && checkedItem.small === small);
             state.cartItems = cartItems.slice(0, itemIndex).concat(cartItems.slice(itemIndex + 1))
         } else {
-            updateOrder(state, pizza, -1, small);
+            updateOrder(state, item, -1, small);
         }
     },
-    delPizza(state, options) {
+
+    delItem(state, options) {
         const { cartItems } = state;
-        const pizza = options.pizza;
+        const item = options.item;
         const small = options.small;
-        const itemIndex = cartItems.findIndex((item) => item.id === pizza.id && item.small === small);
+        const itemIndex = cartItems.findIndex((checkedItem) => checkedItem.category === item.category && checkedItem.id === item.id && checkedItem.small === small);
         state.cartItems = cartItems.slice(0, itemIndex).concat(cartItems.slice(itemIndex + 1))
         let orderTotal = 0;
         for(let item of state.cartItems) {
@@ -83,15 +92,32 @@ const getters = {
     itemsTotal: (state) => state.itemsTotal
 }
 
-const findPizzaInList = (context, pizzaId) => {
-    const list = context.rootState.pizzaList.pizza;
-    return list.find((pizza) => pizza.id === pizzaId);
+const findItemInList = (context, newItemId, category) => {
+    let list;
+    switch (category) {
+        case 'pizza':
+            list = context.rootState.pizza.pizza;
+            break;
+        case 'cold-drinks':
+            list = context.rootState.drinks.coldDrinks;
+            break;
+        case 'hot-drinks':
+            list = context.rootState.drinks.hotDrinks;
+            break;
+        case 'beer-drinks':
+            list = context.rootState.drinks.beerDrinks;
+            break;
+        default:
+            list = [];
+    }
+
+    return list.find((item) => item.id === newItemId);
 }
 
-const updateOrder = (state, pizza, quantity, small) => {
+const updateOrder = (state, item, quantity, small) => {
     const { cartItems } = state;
-    const itemIndex = cartItems.findIndex((item) => item.id === pizza.id && item.small === small);
-    const newItem = updateCartItem(pizza, cartItems[itemIndex], quantity, small);
+    const itemIndex = cartItems.findIndex((checkedItem) => checkedItem.category === item.category && checkedItem.id === item.id && checkedItem.small === small);
+    const newItem = updateCartItem(item, cartItems[itemIndex], quantity, small);
     if (itemIndex >= 0) {
         state.cartItems = cartItems.slice(0, itemIndex).concat([newItem]).concat(cartItems.slice(itemIndex + 1))
     } else {
@@ -109,31 +135,40 @@ const updateOrder = (state, pizza, quantity, small) => {
     state.itemsTotal = itemsTotal
 }
 
-const updateCartItem = (pizza, item = {}, quantity, small) => {
+const updateCartItem = (item, newItem = {}, quantity, small) => {
     const {
-        id = pizza.id,
-        title = pizza.title,
+        category = item.category,
+        id = item.id,
+        title = item.title,
         count = 0,
         total = 0,
-        image = pizza.image
-    } = item;
+        image = item.image,
+        volumeSmall = item.volume.small,
+        volumeLarge = item.volume.large,
+    } = newItem;
     if (small) {
         return {
+            category,
             id,
             title,
             count: count + quantity,
-            total: total + pizza.prices.small * quantity,
+            total: total + item.prices.small * quantity,
             image,
-            small
+            small,
+            volumeSmall,
+            volumeLarge
         }
     }
     return {
+        category,
         id,
         title,
         count: count + quantity,
-        total: total + pizza.prices.large * quantity,
+        total: total + item.prices.large * quantity,
         image,
-        small
+        small,
+        volumeSmall,
+        volumeLarge
     }
 }
 
