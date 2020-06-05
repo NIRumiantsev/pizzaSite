@@ -61,7 +61,8 @@ const mutations = {
         const desiredItem = cartItems.find((checkedItem) => checkedItem.category === item.category && checkedItem.id === item.id && checkedItem.small === small);
         if (desiredItem.count <= 1) {
             const itemIndex = cartItems.findIndex((checkedItem) => checkedItem.category === item.category && checkedItem.id === item.id && checkedItem.small === small);
-            state.cartItems = cartItems.slice(0, itemIndex).concat(cartItems.slice(itemIndex + 1))
+            state.cartItems = cartItems.slice(0, itemIndex).concat(cartItems.slice(itemIndex + 1));
+            state.itemsTotal -= 1;
         } else {
             updateOrder(state, item, -1, small);
         }
