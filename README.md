@@ -1,4 +1,5 @@
-# pizza
+# Firstoff-Pizza
+(For non-commercial usage only)
 
 ## Project setup
 ```
